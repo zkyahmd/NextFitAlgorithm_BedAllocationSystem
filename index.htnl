@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Bed Allocation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            flex-direction: column;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 36px;
+        }
+
+        table {
+            width: 80%;
+            max-width: 800px;
+            border-collapse: collapse;
+            margin: 30px 0;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #2980b9;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #ecf0f1;
+        }
+
+        tr:hover {
+            background-color: #bdc3c7;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            width: 80%;
+            max-width: 400px;
+        }
+
+        form h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        label {
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        button {
+            padding: 12px 20px;
+            background-color: #2980b9;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #3498db;
+        }
+
+        .message {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #e74c3c;
+            color: white;
+            border-radius: 4px;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .success {
+            background-color: #27ae60;
+        }
+    </style>
+</head>
+<body>
+    <h1>Hospital Bed Allocation</h1>
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div class="message {% if 'Failed' in messages[0] %}error{% else %}success{% endif %}">
+        {{ messages[0] }}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <table>
+        <tr>
+            <th>Index</th>
+            <th>Type</th>
+            <th>Size</th>
+            <th>Status</th>
+        </tr>
+        {% for bed in beds %}
+        <tr>
+            <td>{{ loop.index0 }}</td>
+            <td>{{ bed.split(", ")[0].split(": ")[1] }}</td>
+            <td>{{ bed.split(", ")[1].split(": ")[1] }}</td>
+            <td>{{ bed.split(", ")[2].split(": ")[1] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <form action="/allocate" method="POST">
+        <h3>Allocate Bed</h3>
+        <label for="bed_type">Bed Type:</label>
+        <input type="text" id="bed_type" name="bed_type" required>
+        <label for="size">Size:</label>
+        <input type="number" id="size"name="size" required>
+        <button type="submit">Allocate</button>
+    </form>
+
+    <form action="/free" method="POST">
+        <h3>Free Bed</h3>
+        <label for="index">Index:</label>
+        <input type="number" id="index" name="index" required>
+        <button type="submit">Free</button>
+    </form>
+
+</body>
+</html>
